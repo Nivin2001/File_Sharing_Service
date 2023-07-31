@@ -36,6 +36,10 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
+        $validate=$request->validate([
+            'title'=> 'required|max:255',
+            'Description'=>'nullable|string|max:255',
+        ]);
 
         $file=File::create($request->all());//read all date
         $file->save();
@@ -45,7 +49,7 @@ class FileController extends Controller
                    $path=$file->store('/titles','uploads');//upload
             $fileLink = Storage::disk('uploads')->url($path); // Generate the link using the Storage facade
 
-                     return view('Files.create')->with([
+            return view('Files.share')->with([
                 'fileLink' => $fileLink
             ]);
 
@@ -57,15 +61,7 @@ class FileController extends Controller
         }
 
     }
-    // public function show($id)
-    // {
-    //     $file = File::findOrFail($id);
-    //     $fileLink = Storage::disk('uploads')->url($file->path);
 
-    //     return view('Files.show')->with([
-    //         'file' => $file,
-    //         'fileLink' => $fileLink,
-    //     ]);
 
     public function download()
     {
@@ -76,6 +72,7 @@ class FileController extends Controller
 if($path && Storage::disk('uploads')->exists($path)){
     $file = Storage::disk('uploads')->path($path);
     return response()->download($file);
+
 }
 return redirect()->back()
                 ->with('msg', 'File not found')
@@ -83,13 +80,24 @@ return redirect()->back()
 
 
     }
+    
 
 //     public function share($id)
 // {
 //     $file = File::findOrFail($id);
-//     $url = route('Files.download', ['file' => $file->file]);
-//     return view('Files.share', compact('url', 'file'));
+//     $fileLink = route('Files.create', ['fileLink' => $file->fileLink]);
+//     return view('Files.share', compact('fileLink '));
 // }
+
+ // public function show($id)
+    // {
+    //     $file = File::findOrFail($id);
+    //     $fileLink = Storage::disk('uploads')->url($file->path);
+
+    //     return view('Files.show')->with([
+    //         'file' => $file,
+    //         'fileLink' => $fileLink,
+    //     ]);
 }
 
 

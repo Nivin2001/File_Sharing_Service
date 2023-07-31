@@ -21,8 +21,8 @@ Route::get('/', function () {
 Route::get('/view',[FileController::class,'index'])->name('Files.index');
 Route::get('/uploadFiles/create',[FileController::class,'create'])->name('Files.create');
 Route::post('/uploadFiles',[FileController::class,'store'])->name('Files.store');
-Route::get('/download/{filename}', [FileController::class, 'download'])->name('Files.download');
-// Route::get('/share/{file}', [FileControl::class, 'share'])->name('file.share');
+Route::get('/download/{file}', [FileController::class, 'download'])->name('Files.download');
+Route::get('/share/{fileLink}', [FileController::class, 'share'])->name('Files.share');
 // Route::get('file/{id}',[FileController::class,'show'])->name('Files.show');
 
 
