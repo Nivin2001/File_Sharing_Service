@@ -1,16 +1,30 @@
-      <!-- Container to display the file link -->
+@extends('Layouts.Master')
 
-      <div style="text-align: center;">
-        <p class="fw-bold" style="font-size: 20px; margin: 20px ;">File uploaded successfully</p>
-          <img src="{{ asset('assets/B.jpg') }}" alt="Good Job">
-        <p>You did a great job!</p>
-        <p>Click the link below to download your reward:</p>
-      @if(isset($fileLink))
-      <div>
-          <a class="progress-bar bg-info" role="progressbar"  href="{{ $fileLink }}" target="_blank" >{{ $fileLink }}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Share File</title>
+</head>
+<body>
+    <h1>Share File</h1>
 
-          </a>
+    @if (isset($file))
+        <h2>File Details</h2>
+        <p><strong>Title:</strong> {{ $file->title }}</p>
+        <p><strong>Description:</strong> {{ $file->Description }}</p>
 
-         @endif
-        </div>
+        <h2>File Link</h2>
+        <p>You can share the file using the following link:</p>
+        <a href="{{ $file->file_link }}" target="_blank">{{ $file->file_link }}</a>
 
+        <h2>Actions</h2>
+        <p>You can perform the following actions:</p>
+        <ul>
+            <li><a href="{{ route('Files.download', ['fileLink' => $file->file_link]) }}" target="_blank">Download File</a></li>
+            <li><a href="{{ route('home') }}">Back to Home</a></li>
+        </ul>
+    @else
+        <p>File not found.</p>
+    @endif
+</body>
+</html>

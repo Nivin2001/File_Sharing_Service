@@ -9,6 +9,6 @@ class File extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'title','description'
+        'title','description','file_path','user_id','total_downloads',
     ];
 }

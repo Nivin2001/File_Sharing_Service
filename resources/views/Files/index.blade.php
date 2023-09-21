@@ -1,76 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Welcome</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-      crossorigin="anonymous"
-    />
+@extends('Layouts.Master') <!-- Replace 'layout_name' with the actual name of your layout -->
 
-    <!-- Add icon library -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-
-    <style>
-      .text-center {
-        margin-top: 4.375rem;
+<style>
+    .text-center {
+        margin-top: .375rem;
         font-size: 2.5rem;
         color: brown;
-      }
+    }
+     .text-center    h2  {
+        color: black;
+    }
 
-      .content {
+    .content {
         width: 39rem;
         margin: 6.25rem auto;
         text-align: center;
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-      .btn {
-        padding: 0.9375rem 1.5625rem;
-      }
-      .img {
-        width: 31.25rem;
-      }
-      @media (max-width: 45rem) {
-        .text-center {
-          font-size: 2rem;
-        }
-        .content {
-          flex-direction: column;
-        }
-        .img {
-          width: 21.25rem;
-          margin-top: -3.25rem;
+    }
 
-          margin-bottom: 1.25rem;
+    .btn {
+        padding: 0.9375rem 1.5625rem;
+    }
+
+    .img {
+        width: 31.25rem;
+    }
+
+    @media (max-width: 45rem) {
+        .text-center {
+            font-size: 2rem;
         }
-      }
-    </style>
-  </head>
-  <body>
-    <section>
-      <h1 class="text-center">Welcome to my website</h1>
-      <div class="content">
+
+        .content {
+            flex-direction: column;
+        }
+
+        .img {
+            width: 21.25rem;
+            margin-top: -3.25rem;
+            margin-bottom: 1.25rem;
+        }
+    }
+</style>
+
+<body>
+
+    @section('content')
+
+    <!-- Your content for this section goes here -->
+    <div class="container">
+      {{-- <p> welcome  {{ Auth::user()->name }} </p> --}}
+
+    <h1 class="text-center">Welcome to File Sharing Servive website</h1>
+    {{-- <h2 class="text-center" coloe="black" > upload your files </h2> --}}
+    @if(session()->has('success'))
+    {{-- Check if the session variable has a value --}}
+    <div class="alert alert-sucess">
+        {{ session('success') }}
+        {{-- Print the session value --}}
+    </div>
+    @endif
+
+    <div class="content">
         <img class="img" src="assets/A.jpg" />
 
         <button class="btn" style="width: 100%">
-          <a
-            href="{{ route('Files.create') }}"
-            type="button"
-            class="btn btn-danger"
-          >
-            <i class="fa fa-upload"></i> Upload</a
-          >
+            <a href="{{ route('Files.upload') }}" type="button" class="btn btn-danger">
+                <i class="fa fa-upload"></i> Upload
+            </a>
         </button>
-      </div>
-    </section>
-  </body>
+    </div>
+
+
+
+        <script>
+            // JavaScript
+            document.querySelector(".btn.text-start").addEventListener("click", function() {
+                // Redirect to the login route
+                window.location.href = "/login"; // Replace "/login" with your actual login route
+            });
+        </script>
+
+        <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@endsection
+</body>
 </html>
+

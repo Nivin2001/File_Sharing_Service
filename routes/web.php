@@ -1,8 +1,8 @@
 <?php
-namespace App\Http\Controllers;
+
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,16 +15,22 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/view',[FileController::class,'index'])->name('Files.index');
-Route::get('/uploadFiles/create',[FileController::class,'create'])->name('Files.create');
+
+Route::get('/',[FileController::class,'index'])->name('home');
+Route::get('/upload',[FileController::class,'upload'])->name('Files.upload');
 Route::post('/uploadFiles',[FileController::class,'store'])->name('Files.store');
-Route::get('/download/{file}', [FileController::class, 'download'])->name('Files.download');
-Route::get('/share/{fileLink}', [FileController::class, 'share'])->name('Files.share');
-// Route::get('file/{id}',[FileController::class,'show'])->name('Files.show');
+Route::get('/download/{fileLink}', [FileController::class, 'download'])->name('Files.download');
+ Route::get('/share/{fileLink}', [FileController::class, 'share'])->name('Files.share');
 
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
+require __DIR__.'/auth.php';
