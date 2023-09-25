@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Illuminate\support\str;
 use Illuminate\Support\Facades\Validator;
@@ -65,65 +66,77 @@ class FileController extends Controller
                 'total_downloades' =>0,
             ]);
 
-
-            // Make sure you pass all five required arguments
-            $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user agent from the HTTP request headers
-            $ipAddress = $request->ip();
-
-
-            $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=YOUR_API_KEY&ip={$ipAddress}");
-            $data = $response->json();
-
-            // Check the response structure and access the correct key for the country
-            $country = $data['country_name'] ?? 'Unknown'; // Use a default value if the key is not found
-
-            // Define the $downloaded_at variable with the current timestamp
-            $downloaded_at = Carbon::now();
-
-                // Assuming you have $file defined
-            event(new FileDownloaded($file, $userAgent, $ipAddress, $country, $downloaded_at));
-
-
              return view('Files.download')->with([
-                 'fileLink' => $fileLink,
+                'file' => $file,
                  'fileName' => $filename, // Pass the filename to the view
              ]) ->with('success','files upladed successfuuly');
          }
 
          else {
-             // Handle the case when no 'title' file is uploaded
-             // Redirect back with an error message or do other appropriate actions
+
              return redirect()->back()->with('error', 'No title file was uploaded.');
          }
      }
 
 
+     public function download(Request $request, $fileId )
+     {
+         // Find the file by its ID
+         $file = File::find($fileId);
 
-            public function download(Request $request, $fileId)
-        {
-            // Find the file by its ID
-            $file = File::find($fileId);
+         if (!$file) {
 
-            if (!$file) {
-                // Handle file not found (e.g., return an error response)
-                return redirect()->back()
-                    ->with('msg', 'File not found')
-                    ->with('type', 'danger');
-            }
+             return redirect()->back()
+                 ->with('msg', 'File not found')
+                 ->with('type', 'danger');
+         }
 
-            // Get the file's local path
-            $filePath = Storage::disk('uploads')->path($file->file_path);
+         // Get the file's local path
+         $filePath = Storage::disk('uploads')->path($file->file_path);
 
-            // Get the original filename (base name)
-            $originalFilename = pathinfo($filePath, PATHINFO_BASENAME);
+         // Get the original filename (base name)
+         $originalFilename = pathinfo($filePath, PATHINFO_BASENAME);
 
-            // Increment the total downloads count
-            $file->total_downloads++;
-            $file->save();
+         $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user agent from the HTTP request headers
+         $ipAddress = $request->ip();
 
-            // Return the file as a download with a custom name
-            return response()->download($filePath, $originalFilename);
-        }
+
+         $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=YOUR_API_KEY&ip={$ipAddress}");
+         $data = $response->json();
+
+         // Check the response structure and access the correct key for the country
+         $country = $data['country_name'] ?? 'Unknown'; // Use a default value if the key is not found
+
+         // Define the $downloaded_at variable with the current timestamp
+         $downloaded_at = Carbon::now();
+
+             // Assuming you have $file defined
+         event(new FileDownloaded($file, $userAgent, $ipAddress, $country, $downloaded_at));
+
+         // Return the file as a download with a custom name
+         return response()->download($filePath, $originalFilename);
+     }
+
+
+
+     public function show($id)
+     {
+         // Retrieve the file by its ID
+         $file = File::findOrFail($id);
+
+         // You can retrieve the file link from the 'file_path' attribute of the 'File' model
+         $fileLink = Storage::disk('uploads')->url($file->file_path);
+
+         // Pass the $file variable to the view using compact or an array
+         return view('Files.show', ['file' => $file]);
+
+     }
+
+
+
+
+
+
 
 
 
@@ -157,19 +170,6 @@ class FileController extends Controller
     // }
 
 
-public function share($fileLink)
-{
-
-    $file = File::where('file_link', $fileLink)->first();
-
-    if (!$file) {
-        // Handle the case when the file is not found
-        return redirect()->back()->with('error', 'File not found.');
-    }
-
-    // Pass the file information to the view
-    return view('Files.share')->with('file', $file);
-}
 
 
 }

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\FileDownloaded;
+use App\Models\File;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -38,16 +39,15 @@ class LogFileDownload
             Log::error('Error in LogFileDownload: ' . $e->getMessage());
         }
     }
-
-
-
     private function getUserCountry($ipAddress)
     {
 
         $apiKey = '17bebc15df2f443496206b13a646651a';
+        $ip = request()->ip();
 
         // Make an HTTP request to the ipstack API
-        $response = Http::get("https://app.ipgeolocation.io//$ipAddress?access_key=$apiKey");
+
+        $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey={$apiKey}&ip={$ip}&fields=country_name");
 
         // Check if the request was successful (status code 200)
         if ($response->status() === 200) {

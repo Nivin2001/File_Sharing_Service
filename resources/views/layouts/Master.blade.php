@@ -21,7 +21,9 @@
 
     .welcome-message {
         float: right;
-        margin-right: 20px;
+        color: black;
+
+        margin-left: 500px;
     }
 </style>
 
@@ -43,7 +45,7 @@
 
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="{{route('home')}}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('Files.upload')}}">Upload</a>
@@ -63,7 +65,7 @@
                     </li>
                 </ul>
 
-                {{-- <p class="welcome-message">Welcome {{ Auth::user()->name }}</p> --}}
+                <p class="welcome-message ">Welcome {{ Auth::user()->name }}</p>
 
 
 

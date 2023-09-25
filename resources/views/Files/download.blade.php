@@ -20,19 +20,19 @@
     @if (isset($fileName))
         <p>File Name: {{ $fileName }}</p>
     @endif
-    @if (isset($fileLink))
+
            <!-- Download Button with Icon -->
 
+           <a href="{{ route('Files.download', $file->id) }}" class="btn btn-outline-danger">
+            <i class="fas fa-check"></i> download
+        </a>
 
-    {{-- <p>File Link: <a href="{{ route('Files.download', ['fileLink' => $fileLink]) }}"  class="btn btn-success"> <i class="fas fa-download"></i> {{ $fileLink }} </a>  Download</p> --}}
+        <!-- Show Button with Icon -->
+        <a href="{{ route('Files.show', $file->id) }}" class="btn btn-outline-primary">
+            <i class="fas fa-check"></i> Show
+        </a>
 
-         <p>File Link: <a href="{{ $fileLink }}">{{ $fileLink }}</a >  <i  class="fas fa-download"></i> Download</p>
-    @endif
 
-       <!-- Share Button with Icon -->
-       <a href="{{ route('Files.share', ['fileLink' => $fileLink]) }}" class="btn btn-danger">
-        <i class="fas fa-share"></i> Share
-    </a>
 @endsection
 </body>
 </html>

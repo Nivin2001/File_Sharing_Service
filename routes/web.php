@@ -15,12 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {
+    return view('welcome');
+}) ->name('home') ->middleware('auth');
 
-Route::get('/',[FileController::class,'index'])->name('home');
-Route::get('/upload',[FileController::class,'upload'])->name('Files.upload');
-Route::post('/uploadFiles',[FileController::class,'store'])->name('Files.store');
-Route::get('/download/{fileLink}', [FileController::class, 'download'])->name('Files.download');
- Route::get('/share/{fileLink}', [FileController::class, 'share'])->name('Files.share');
+Route::get('/login',[LoginController::class,'create'])
+->name('login')
+->middleware('guest');
+
+// بدي الي يدخل عليها يكون guest
+// not athicated
+Route::post('/login',[LoginController::class,'store'])
+->middleware('guest');
 
 
 Route::get('/dashboard', function () {
@@ -33,4 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
 require __DIR__.'/auth.php';
+
+Route::get('/home',[FileController::class,'index'])->name('home');
+Route::get('/file',[FileController::class,'upload'])->name('Files.upload');
+Route::post('/uploadFiles',[FileController::class,'store'])->name('Files.store');
+Route::get('/file/{fileLink}',[FileController::class,'show'])->name('Files.show');
+Route::get('/download/{fileLink}', [FileController::class, 'download'])->name('Files.download');
+ Route::get('/share/{fileLink}', [FileController::class, 'share'])->name('Files.share');
